@@ -21,6 +21,7 @@ String[] restcons = {"LLA", "SUP","REF", "LLC"};
 String[] sup = {"S","PA","PC","PYC"};
 String[] ref = {"TH","PT","NOM","IG","NOM","PYC","ULTIMOREST"};
 String[] c = {"PACK", "DEFCLA","LLA","EXT","MN","PC","LLA","CUER", "LLC","LLC"};
+expresionesRegulares expReg;
 
 
 Stack<String> pilaProceso = new Stack<String>();
@@ -374,6 +375,238 @@ Stack<String> pilaProceso = new Stack<String>();
         boolean aux = false;
         pilaProceso.pop();
         pilaProceso.push(".");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean c(){
+        boolean aux = false;
+        if (pack()){
+            if (defcla()){
+                if (lla()){
+                    if (ext()){
+                        if (mn()){
+                            if (pc()){
+                                if (lla()){
+                                    if (cuer()){
+                                        if (llc()){
+                                            if (llc()){
+                                                aux = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return aux;
+    }
+
+    public boolean pack(){
+        return imp();
+    }
+
+    public boolean imp(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("import");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean defcla(){
+        return ma();
+    }
+
+    public boolean ext(){
+        return ne();
+    }
+
+    public boolean ne(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("new");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean mn(){
+        boolean aux = false;
+        if (noac()){
+            if (rtp()){
+                if (str()){
+                    if (ma()){
+                        if (cci()){
+                            if (ccf()){
+                                if (ar()){
+                                    aux = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return aux;
+    }
+
+    public boolean ma(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("main");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+
+    }
+
+    public boolean noac(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("static");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean rtp(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("void");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+
+    }
+
+    public boolean str(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("String");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+
+    }
+
+    public boolean cci(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("[");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean ccf(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("]");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean ar(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("args");
+        if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean cuer(){
+        boolean aux = false;
+        if (dat()){
+            if (cuer()){
+                aux = true;
+            }
+        }
+
+        return aux;
+    }
+
+    public boolean dat(){
+        boolean aux = false;
+        if (num()){
+            if (resnum()){
+                aux = true;
+            }
+        }else {
+            if (com()){
+                if (expReg.validarLetras(pilaProceso.peek())){
+                    if (com()){
+                        aux = true;
+                    }
+                }
+            }
+        }
+
+        return aux;
+    }
+
+    public boolean num(){
+        boolean aux = false;
+        if (expReg.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+    }
+
+    public boolean resnum(){
+        boolean aux = false;
+        if (expReg.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))){
+            resnum();
+            aux = true;
+        }
+        num();
+        return aux;
+    }
+
+    public boolean com(){
+        boolean aux = false;
+        pilaProceso.pop();
+        pilaProceso.push("\"");
         if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
             popDatos();
             imprimirPila();
