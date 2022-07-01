@@ -5,11 +5,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
-
+import analizador.Model.analizadorSintactico;
 import java.util.StringTokenizer;
 
 public class controllerInicio {
     ObservableList<String> entrada = FXCollections.observableArrayList();
+    ObservableList<String> entrada2 = FXCollections.observableArrayList();
+    analizadorSintactico analizadorS;
 
     @FXML
     private TextArea classMain;
@@ -29,11 +31,13 @@ public class controllerInicio {
         StringTokenizer st = new StringTokenizer(classMain.getText());
         while (st.hasMoreTokens()) {
             //System.out.println(st.nextToken());
-            entrada.add(st.nextToken());
+            entrada2.add(st.nextToken());
         }
 
+        analizadorS = new analizadorSintactico();
+        analizadorS.recivirDato(entrada, entrada2);
 
-        ImprimirArray();
+
     }
 
     public void ImprimirArray(){

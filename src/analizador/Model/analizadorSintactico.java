@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.print.attribute.standard.PrinterMessageFromOperator;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -21,17 +22,29 @@ String[] restcons = {"LLA", "SUP","REF", "LLC"};
 String[] sup = {"S","PA","PC","PYC"};
 String[] ref = {"TH","PT","NOM","IG","NOM","PYC","ULTIMOREST"};
 String[] c = {"PACK", "DEFCLA","LLA","EXT","MN","PC","LLA","CUER", "LLC","LLC"};
+String[] pack = {"IMP","NOM","PT","NOM","PT","NOM", "PYC"};
+String[] defcla = {"PUB","CLA","MA"};
+String[] ext ={"NOM","NOM","IG","NE","NOM","PA","PC","PYC"};
+String[] mn ={"PUB","NOAC","RTP","MA","PA","STR","CCI","CCF","AR"};
+String[] cuer ={"NOM","PT","NOM","PA","DAT","PC","PYC","RESTCUER"};
+String[] dat1 = {"NUM", "RESNUM" };
+String[] dat2 = {"COMA", "NOM", "COMC"};
 expresionesRegulares expReg;
 
 
 Stack<String> pilaProceso = new Stack<String>();
 
-    public boolean recivirDato(ObservableList datos){
+    public boolean recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
         System.out.println("inicia el proceso");
-        cadenaCodigo = datos;
+        for (int i = datos2.size()-1; i>=0; i--){
+            cadenaCodigo.add(datos2.get(i));
+        }
+        for (int i = datos.size()-1; i>=0; i--){
+            cadenaCodigo.add(datos.get(i));
+        }
         pilaProceso.push("S");
         if (pilaProceso.size()==1){
-
+        sap();
         }
         return true;
     }
@@ -57,6 +70,10 @@ Stack<String> pilaProceso = new Stack<String>();
         ingresarCadenaAlaPila(sa);
         imprimirPila();
         inicioP();
+        pilaProceso.pop();
+        if(c()){
+            System.out.println("termino proceso");
+        }
     }
 
     public void inicioP(){
@@ -79,6 +96,8 @@ Stack<String> pilaProceso = new Stack<String>();
         boolean aux = false;
         pilaProceso.pop();
         pilaProceso.push("public");
+        imprimirPila();
+        System.out.println(cadenaCodigo.get(cadenaCodigo.size()-1));
         if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
             popDatos();
             imprimirPila();
@@ -145,10 +164,12 @@ Stack<String> pilaProceso = new Stack<String>();
     public boolean atribup(){
         boolean aux = false;
         boolean bucle = true;
+        String priva = "private";
         pilaProceso.pop();
         ingresarCadenaAlaPila(atribu);
         imprimirPila();
         while(bucle){
+            bucle = false;
             if (priv()){
                 aux = false;
                 if(tipo()){
@@ -158,9 +179,11 @@ Stack<String> pilaProceso = new Stack<String>();
                         imprimirPila();
                         if (pyc()){
                             pilaProceso.pop();
-                            if(pilaProceso.peek().equals("private")){
+                            imprimirPila();
+                            if(cadenaCodigo.get(cadenaCodigo.size()-1).equals(priva)){
                                 ingresarCadenaAlaPila(atribu);
                                 imprimirPila();
+                                bucle=true;
                             }else{
                                 bucle = false;
                             }
@@ -187,6 +210,7 @@ Stack<String> pilaProceso = new Stack<String>();
     }
     public boolean tipo(){
         boolean aux = false;
+        imprimirPila();
         if(cadenaCodigo.get(cadenaCodigo.size()-1).equals("int") || cadenaCodigo.get(cadenaCodigo.size()-1).equals("String") || cadenaCodigo.get(cadenaCodigo.size()-1).equals("float")) {
             popDatos();
             imprimirPila();
@@ -254,17 +278,21 @@ Stack<String> pilaProceso = new Stack<String>();
     public boolean paramp(){
         boolean aux = false;
         boolean bucle = true;
+        pilaProceso.pop();
         ingresarCadenaAlaPila(param);
         while (bucle){
+            bucle = false;
             if(tipo()){
                 boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
                 if (result) {
                     popDatos();
                     imprimirPila();
-                    if(pilaProceso.peek().equals(",")){
+                    if(cadenaCodigo.get(cadenaCodigo.size()-1).equals(",")){
                         popDatos();
                         ingresarCadenaAlaPila(param);
+                        bucle=true;
                     }else{
+                        pilaProceso.pop();
                         bucle = false;
                         aux = true;
                     }
@@ -320,20 +348,26 @@ Stack<String> pilaProceso = new Stack<String>();
     public boolean refp(){
         boolean aux = false;
         boolean bucle = true;
+        String thi = "this";
         pilaProceso.pop();
         ingresarCadenaAlaPila(ref);
         while (bucle){
             aux = false;
+            bucle = false;
+            imprimirPila();
             if (th()){
                 if(pt()){
                     boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
                     if (result) {
+                        popDatos();
                         if(ig()){
                             boolean result2 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
                             if (result2) {
+                                popDatos();
                                 if (pyc()){
                                     pilaProceso.pop();
-                                    if(pilaProceso.peek().equals("this")){
+                                    if(cadenaCodigo.get(cadenaCodigo.size()-1).equals(thi)){
+                                        bucle = true;
                                         ingresarCadenaAlaPila(ref);
                                         imprimirPila();
                                     }else{
@@ -383,7 +417,11 @@ Stack<String> pilaProceso = new Stack<String>();
         return aux;
     }
 
-    public boolean c(){
+    public boolean c() {
+        pilaProceso.pop();
+        cadenaCodigo.remove(cadenaCodigo.size()-1);
+        ingresarCadenaAlaPila(c);
+        imprimirPila();
         boolean aux = false;
         if (pack()){
             if (defcla()){
@@ -411,13 +449,39 @@ Stack<String> pilaProceso = new Stack<String>();
     }
 
     public boolean pack(){
-        return imp();
+        boolean aux = false;
+        pilaProceso.pop();
+        ingresarCadenaAlaPila(pack);
+        imprimirPila();
+        if(imp()){
+            boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+            if (result) {
+                popDatos();
+                if(pt()){
+                    boolean result2 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                    if (result2) {
+                        popDatos();
+                        if(pt()){
+                            boolean result3 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                            if (result3) {
+                                popDatos();
+                                if(pyc()){
+                                    aux = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return  aux;
     }
 
     public boolean imp(){
         boolean aux = false;
         pilaProceso.pop();
         pilaProceso.push("import");
+
         if (pilaProceso.peek().equals(cadenaCodigo.get(cadenaCodigo.size()-1))) {
             popDatos();
             imprimirPila();
@@ -427,11 +491,45 @@ Stack<String> pilaProceso = new Stack<String>();
     }
 
     public boolean defcla(){
-        return ma();
+        boolean aux = false;
+        pilaProceso.pop();
+        ingresarCadenaAlaPila(defcla);
+        if(pub()){
+            if (cla()){
+                if(ma())
+                    aux = true;
+            }
+        }
+        return aux;
     }
 
     public boolean ext(){
-        return ne();
+        boolean aux = false;
+        pilaProceso.pop();
+        ingresarCadenaAlaPila(ext);
+        boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+        if (result) {
+            popDatos();
+            boolean result2 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+            if (result2) {
+                popDatos();
+                if (ig()){
+                    if(ne()){
+                        boolean result3 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                        if (result3) {
+                            popDatos();
+                            if(pa()){
+                                if (pc()){
+                                    if (pyc())
+                                        aux = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return  aux;
     }
 
     public boolean ne(){
@@ -448,21 +546,29 @@ Stack<String> pilaProceso = new Stack<String>();
 
     public boolean mn(){
         boolean aux = false;
-        if (noac()){
-            if (rtp()){
-                if (str()){
+        pilaProceso.pop();
+        ingresarCadenaAlaPila(mn);
+        if(pub()){
+            if (noac()){
+                if (rtp()){
                     if (ma()){
-                        if (cci()){
-                            if (ccf()){
-                                if (ar()){
-                                    aux = true;
+                        if(pa()){
+                            if (str()){
+                                if (cci()){
+                                    if (ccf()){
+                                        if (ar()){
+                                            aux = true;
+                                        }
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
             }
         }
+
 
         return aux;
     }
@@ -556,26 +662,67 @@ Stack<String> pilaProceso = new Stack<String>();
 
     public boolean cuer(){
         boolean aux = false;
-        if (dat()){
-            if (cuer()){
-                aux = true;
+        boolean bucle = true;
+        pilaProceso.pop();
+        ingresarCadenaAlaPila(cuer);
+        while (bucle){
+            boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+            bucle=false;
+            if (result) {
+                popDatos();
+                if(pt()){
+                    boolean result2 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                    if (result2) {
+                        popDatos();
+                        if(pa()){
+                            if(dat()){
+                                if(pc()){
+                                    if(pyc()){
+                                        pilaProceso.pop();
+                                        boolean result3 = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                                        if (result3) {
+                                            bucle = true;
+                                            ingresarCadenaAlaPila(cuer);
+                                        }else{
+                                            bucle = false;
+                                            aux = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
         return aux;
     }
 
     public boolean dat(){
         boolean aux = false;
-        if (num()){
-            if (resnum()){
-                aux = true;
+        boolean bucle = true;
+        pilaProceso.pop();
+        if (isnum()){
+            ingresarCadenaAlaPila(dat1);
+            while(bucle){
+                if (num()){
+                    pilaProceso.pop();
+                    if(isnum()){
+                        ingresarCadenaAlaPila(dat1);
+                    }
+                }  else
+                    bucle = false;
+                    aux = true;
             }
-        }else {
-            if (com()){
-                if (expReg.validarLetras(pilaProceso.peek())){
-                    if (com()){
-                        aux = true;
+
+        }else{
+            ingresarCadenaAlaPila(dat2);
+            if(coma()){
+                boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                if (result) {
+                    popDatos();
+                    if(coma()){
+                       aux = true;
                     }
                 }
             }
@@ -584,26 +731,28 @@ Stack<String> pilaProceso = new Stack<String>();
         return aux;
     }
 
-    public boolean num(){
+    public boolean isnum(){
         boolean aux = false;
-        if (expReg.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+        if (expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))) {
             imprimirPila();
             aux = true;
         }
         return aux;
     }
 
-    public boolean resnum(){
+    public boolean num(){
         boolean aux = false;
-        if (expReg.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))){
-            resnum();
+        if (expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1))) {
+            popDatos();
+            imprimirPila();
             aux = true;
         }
-        num();
         return aux;
     }
 
-    public boolean com(){
+
+
+    public boolean coma(){
         boolean aux = false;
         pilaProceso.pop();
         pilaProceso.push("\"");
