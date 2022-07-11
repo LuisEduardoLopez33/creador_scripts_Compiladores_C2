@@ -10,31 +10,34 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class analizadorSintactico {
-ObservableList<String> cadenaCodigo = FXCollections.observableArrayList();
-expresionesRegulares expresiones = new expresionesRegulares();
-String[] sa = {"INICIO", "C"};
-String[] inicio ={"PUB","CLA", "NOM", "CUERPO"};
-String[] cuerpo = {"LLA","ATRIBU","CONS", "LLC"};
-String[] atribu = {"PRIV","TIPO","NOM","PYC","RESTA"};
-String[] cons = {"PUB","NOM","PA","PARAM","PC","RESTCONS"};
-String[] param = {"TIPO", "NOM","RESTPARAM"};
-String[] restcons = {"LLA", "SUP","REF", "LLC"};
-String[] sup = {"S","PA","PC","PYC"};
-String[] ref = {"TH","PT","NOM","IG","NOM","PYC","ULTIMOREST"};
-String[] c = {"PACK", "DEFCLA","LLA","EXT","MN","PC","LLA","CUER", "LLC","LLC"};
-String[] pack = {"IMP","NOM","PT","NOM","PT","NOM", "PYC"};
-String[] defcla = {"PUB","CLA","MA"};
-String[] ext ={"NOM","NOM","IG","NE","NOM","PA","PC","PYC"};
-String[] mn ={"PUB","NOAC","RTP","MA","PA","STR","CCI","CCF","AR"};
-String[] cuer ={"NOM","PT","NOM","PA","DAT","PC","PYC","RESTCUER"};
-String[] dat1 = {"NUM", "RESNUM" };
-String[] dat2 = {"COMA", "NOM", "COMC"};
-expresionesRegulares expReg;
+    ObservableList<String> cadenaCodigo = FXCollections.observableArrayList();
+    expresionesRegulares expresiones = new expresionesRegulares();
+    String[] sa = {"INICIO", "C"};
+    String[] inicio ={"PUB","CLA", "NOM", "CUERPO"};
+    String[] cuerpo = {"LLA","ATRIBU","CONS", "LLC"};
+    String[] atribu = {"PRIV","TIPO","NOM","PYC","RESTA"};
+    String[] cons = {"PUB","NOM","PA","PARAM","PC","RESTCONS"};
+    String[] param = {"TIPO", "NOM","RESTPARAM"};
+    String[] restcons = {"LLA", "SUP","REF", "LLC"};
+    String[] sup = {"S","PA","PC","PYC"};
+    String[] ref = {"TH","PT","NOM","IG","NOM","PYC","ULTIMOREST"};
+    String[] c = {"PACK", "DEFCLA","LLA","EXT","MN","PC","LLA","CUER", "LLC","LLC"};
+    String[] pack = {"IMP","NOM","PT","NOM","PT","NOM", "PYC"};
+    String[] defcla = {"PUB","CLA","MA"};
+    String[] ext ={"NOM","NOM","IG","NE","NOM","PA","PC","PYC"};
+    String[] mn ={"PUB","NOAC","RTP","MA","PA","STR","CCI","CCF","AR"};
+    String[] cuer ={"NOM","PT","NOM","PA","DAT","PC","PYC","RESTCUER"};
+    String[] dat1 = {"NUM", "RESNUM" };
+    String[] dat2 = {"COMA", "NOM", "COMC"};
+    expresionesRegulares expReg;
+    String ultimo = "";
+    boolean str = true;
 
 
-Stack<String> pilaProceso = new Stack<String>();
+    Stack<String> pilaProceso = new Stack<String>();
 
-    public boolean recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
+    public String recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
+        String aux = "";
         System.out.println("inicia el proceso");
         for (int i = datos2.size()-1; i>=0; i--){
             cadenaCodigo.add(datos2.get(i));
@@ -44,9 +47,18 @@ Stack<String> pilaProceso = new Stack<String>();
         }
         pilaProceso.push("S");
         if (pilaProceso.size()==1){
-        sap();
+            if (sap()){
+                aux = "true, ";
+            }else {
+                if (str) {
+                    aux = "false, " + cadenaCodigo.get(cadenaCodigo.size() - 1);
+                }else {
+                    aux = "false, "+ pilaProceso.peek();
+                }
+            }
+
         }
-        return true;
+        return aux;
     }
     // INGRESAR A LA PILA LOS ELEMTOS DEL ARRAY
     public void  ingresarCadenaAlaPila(String[] lista){
@@ -65,32 +77,40 @@ Stack<String> pilaProceso = new Stack<String>();
         cadenaCodigo.remove(cadenaCodigo.size()-1);
     }
 
-    public void sap(){
+    public boolean sap(){
+        boolean aux = false;
         pilaProceso.pop();
         ingresarCadenaAlaPila(sa);
         imprimirPila();
-        inicioP();
-        pilaProceso.pop();
-        if(c()){
-            System.out.println("termino proceso");
+//        inicioP();
+        if (inicioP()) {
+            //pilaProceso.pop();
+            if (c()) {
+                System.out.println("termino proceso");
+                aux = true;
+            }
         }
+        return aux;
     }
 
-    public void inicioP(){
+    public boolean inicioP(){
+        boolean aux = false;
         pilaProceso.pop();
         ingresarCadenaAlaPila(inicio);
         imprimirPila();
-            if(pub()){
-                if (cla()){
-                    boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
-                    if (result){
-                        popDatos();
-                        imprimirPila();
-                        cuerpop();
+        if(pub()){
+            if (cla()){
+                boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
+                if (result){
+                    popDatos();
+                    imprimirPila();
+                    if(cuerpop()){
+                        aux = true;
                     }
                 }
             }
-
+        }
+        return aux;
     }
     public boolean pub(){
         boolean aux = false;
@@ -118,23 +138,23 @@ Stack<String> pilaProceso = new Stack<String>();
     }
 
 
-    public void cuerpop(){
+    public boolean cuerpop(){
+        boolean aux = false;
         pilaProceso.pop();
         ingresarCadenaAlaPila(cuerpo);
         imprimirPila();
-
-            if(lla()){
-                if(atribup()){
-                    if(consp()){
-                        if(llc()){
-                            System.out.println("final de la primera parte de la gramatica");
-                        }
+        if(lla()){
+            if(atribup()){
+                if(consp()){
+                    if(llc()){
+                        aux = true;
                     }
                 }
             }
+        }
 
 
-
+        return aux;
     }
 
     public boolean lla(){
@@ -170,8 +190,8 @@ Stack<String> pilaProceso = new Stack<String>();
         imprimirPila();
         while(bucle){
             bucle = false;
+            aux = false;
             if (priv()){
-                aux = false;
                 if(tipo()){
                     boolean result = expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1));
                     if (result){
@@ -243,7 +263,9 @@ Stack<String> pilaProceso = new Stack<String>();
                 if (pa()){
                     if(paramp()){
                         if (pc()){
-                           restconsp();
+                            if(restconsp()){
+                                aux = true;
+                            }
                         }
                     }
                 }
@@ -303,7 +325,8 @@ Stack<String> pilaProceso = new Stack<String>();
         return aux;
     }
 
-    public void  restconsp(){
+    public boolean  restconsp(){
+        boolean aux = false;
         pilaProceso.pop();
         ingresarCadenaAlaPila(restcons);
         if (lla()){
@@ -311,10 +334,12 @@ Stack<String> pilaProceso = new Stack<String>();
                 if(refp()){
                     if(llc()){
                         System.out.println("fin del constructor");
+                        aux = true;
                     }
                 }
             }
         }
+        return aux;
     }
 
     public boolean supp(){
@@ -322,13 +347,13 @@ Stack<String> pilaProceso = new Stack<String>();
         pilaProceso.pop();
         ingresarCadenaAlaPila(sup);
         if (s()) {
-           if(pa()){
-               if(pc()){
-                   if (pyc()){
-                       aux = true;
-                   }
-               }
-           }
+            if(pa()){
+                if(pc()){
+                    if (pyc()){
+                        aux = true;
+                    }
+                }
+            }
         }
         return aux;
     }
@@ -419,7 +444,7 @@ Stack<String> pilaProceso = new Stack<String>();
 
     public boolean c() {
         pilaProceso.pop();
-        cadenaCodigo.remove(cadenaCodigo.size()-1);
+        //cadenaCodigo.remove(cadenaCodigo.size()-1);
         ingresarCadenaAlaPila(c);
         imprimirPila();
         boolean aux = false;
@@ -712,7 +737,7 @@ Stack<String> pilaProceso = new Stack<String>();
                     }
                 }  else
                     bucle = false;
-                    aux = true;
+                aux = true;
             }
 
         }else{
@@ -722,7 +747,7 @@ Stack<String> pilaProceso = new Stack<String>();
                 if (result) {
                     popDatos();
                     if(coma()){
-                       aux = true;
+                        aux = true;
                     }
                 }
             }
@@ -749,7 +774,6 @@ Stack<String> pilaProceso = new Stack<String>();
         }
         return aux;
     }
-
 
 
     public boolean coma(){
