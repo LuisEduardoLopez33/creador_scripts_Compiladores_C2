@@ -76,6 +76,11 @@ public class analizadorSintacticoConTabla {
         cadenaCodigo.remove(cadenaCodigo.size()-1);
     }
 
+    public void  ingresarCadenaAlaPila(String[] lista){
+        for (int i = lista.length-1; i >= 0; i--){
+            pilaProceso.push(lista[i]);
+        }
+    }
     public String recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
         String aux = "";
         System.out.println("inicia el proceso");
@@ -85,6 +90,7 @@ public class analizadorSintacticoConTabla {
         for (int i = datos.size()-1; i>=0; i--){
             cadenaCodigo.add(datos.get(i));
         }
+        System.out.println(cadenaCodigo);
         inicio();
         return aux;
     }
@@ -92,12 +98,13 @@ public class analizadorSintacticoConTabla {
         boolean bucle = true;
         pilaProceso.push("SA");
          while(bucle){
+             String[] gramaticaEntrada;
              boolean encontradoCol = false;
              boolean encontradoFil = false;
              boolean isNTerminal = false;
              String interseccion = "";
              String apuntador1 = pilaProceso.peek();
-             String apuntador2 = cadenaCodigo.get(pilaProceso.size()-1);
+             String apuntador2 = cadenaCodigo.get(cadenaCodigo.size()-1);
              int posicion = 0;
              int posicion2 = 0;
              for(int i = 0; i < 29; i++){
@@ -114,16 +121,15 @@ public class analizadorSintacticoConTabla {
                      break;
                  }
              }
-             System.out.println(posicion +","+ posicion2);
              if(encontradoCol && encontradoFil){
                  interseccion = tabla[posicion2][posicion];
-                 System.out.println(interseccion);
-                 System.out.println("si llega hasta aca");
+                 String[] auxInterseccion = interseccion.split(" ");
                  if(interseccion.isEmpty()){
                      bucle= false;
+                     System.out.println("esta vacio xd");
                  }else{
-                     for(int j = 0; j < 30; j++){
-                         if (tabla[j][0].equals(interseccion)) {
+                     for(int j = 0; j < 48; j++){
+                         if (tabla[j][0].equals(auxInterseccion[0])) {
                              isNTerminal = true;
                              break;
                          }
@@ -131,7 +137,8 @@ public class analizadorSintacticoConTabla {
                      if(isNTerminal){
                          pilaProceso.pop();
                          //arreglar porque en caso de que tenga mas de un elemento no lo estaria agregando como diferentes elemntos sino como uno solo
-                         pilaProceso.push(interseccion);
+                         gramaticaEntrada = interseccion.split(" ");
+                         ingresarCadenaAlaPila(gramaticaEntrada);
                          imprimirPila();
                      }else{
                          pilaProceso.pop();
