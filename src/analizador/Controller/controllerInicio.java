@@ -56,7 +56,7 @@ public class controllerInicio {
             analizadorS = new analizadorSintacticoConTabla();
             resltadoObtenido = analizadorS.recivirDato(entrada, entrada2);
 
-            insertMensaje();
+           // insertMensaje();
         }else {
             mensaje.setText("Los Cuadros no Tienen que estar Vacio");
         }

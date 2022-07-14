@@ -3,6 +3,7 @@ package analizador.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 public class analizadorSintacticoConTabla {
@@ -64,6 +65,17 @@ public class analizadorSintacticoConTabla {
     expresionesRegulares expresiones = new expresionesRegulares();
     Stack<String> pilaProceso = new Stack<String>();
 
+    // IMPRIMIR LA PILA
+    public void imprimirPila(){
+        //System.out.println("elementos en pila");
+        System.out.println(Arrays.asList(pilaProceso));
+    }
+    //ELIMINAR LOS DATOS DESPUES DE LA COMPARACION DE DATOS
+    public void popDatos(){
+        pilaProceso.pop();
+        cadenaCodigo.remove(cadenaCodigo.size()-1);
+    }
+
     public String recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
         String aux = "";
         System.out.println("inicia el proceso");
@@ -73,6 +85,70 @@ public class analizadorSintacticoConTabla {
         for (int i = datos.size()-1; i>=0; i--){
             cadenaCodigo.add(datos.get(i));
         }
+        inicio();
         return aux;
     }
+     public void inicio(){
+        boolean bucle = true;
+        pilaProceso.push("SA");
+         while(bucle){
+             boolean encontradoCol = false;
+             boolean encontradoFil = false;
+             boolean isNTerminal = false;
+             String interseccion = "";
+             String apuntador1 = pilaProceso.peek();
+             String apuntador2 = cadenaCodigo.get(pilaProceso.size()-1);
+             int posicion = 0;
+             int posicion2 = 0;
+             for(int i = 0; i < 29; i++){
+                 if (tabla [0][i].equals(apuntador2) ){
+                     posicion = i;
+                     encontradoCol = true;
+                     break;
+                 }
+             }
+             for(int j = 0; j < 30; j++){
+                 if(tabla[j][0].equals(apuntador1)){
+                     posicion2 = j;
+                     encontradoFil = true;
+                     break;
+                 }
+             }
+             System.out.println(posicion +","+ posicion2);
+             if(encontradoCol && encontradoFil){
+                 interseccion = tabla[posicion2][posicion];
+                 System.out.println(interseccion);
+                 System.out.println("si llega hasta aca");
+                 if(interseccion.isEmpty()){
+                     bucle= false;
+                 }else{
+                     for(int j = 0; j < 30; j++){
+                         if (tabla[j][0].equals(interseccion)) {
+                             isNTerminal = true;
+                             break;
+                         }
+                     }
+                     if(isNTerminal){
+                         pilaProceso.pop();
+                         //arreglar porque en caso de que tenga mas de un elemento no lo estaria agregando como diferentes elemntos sino como uno solo
+                         pilaProceso.push(interseccion);
+                         imprimirPila();
+                     }else{
+                         pilaProceso.pop();
+                         imprimirPila();
+                         pilaProceso.push(interseccion);
+                         popDatos();
+                         imprimirPila();
+                     }
+                 }
+             }else{
+                 bucle = false;
+             }
+
+         }
+
+     }
+
+///  validar en que posicion se encuentran las palabras, para validadarlas en una funcion por separado
+
 }
