@@ -8,7 +8,7 @@ import java.util.Stack;
 public class analizadorSintacticoConTabla {
     String[][] tabla = {
             {"","public","class","a...z","A...Z","(",")","{","}",",",".","private","int","String","float",";","super","this","=","import","new","main","static","void","[","]","args","0..1","\""},
-            {"SA","INICIO C","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
+            {"SA","INICIO C RETEN","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"INICIO","PUB CLA NOM CUERPO","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"PUB","public","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"CLA","","class","","","","","","","","","","","","","","","","","","","","","","","","","",""},
@@ -27,7 +27,7 @@ public class analizadorSintacticoConTabla {
             {"TIPO","","","","","","","","","","","","int","String","float","","","","","","","","","","","","","",""},
             {"PYC","","","","","","","","","","","","","","",";","","","","","","","","","","","","",""},
             {"RESTA","∑","","","","","","","","","","ATRIBU","","","","","","","","","","","","","","","","",""},
-            {"CONS","PUB NOM PA PARAM PC RESTCONS","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
+            {"CONS","PUB NOM PA PARAM PC RESTCONST","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"PARAM","","","","","","","","","","","","TIPO NOM RESTPARAM","TIPO NOM RESTPARAM","TIPO NOM RESTPARAM","","","","","","","","","","","","","",""},
             {"RESTPARAM","","","","","","∑","","","CM PARAM","","","","","","","","","","","","","","","","","","",""},
             {"RESTCONST","","","","","","","LLA SUP REF LLC","","","","","","","","","","","","","","","","","","","","",""},
@@ -50,8 +50,8 @@ public class analizadorSintacticoConTabla {
             {"CCI","","","","","","","","","","","","","","","","","","","","","","","","[","","","",""},
             {"CCF","","","","","","","","","","","","","","","","","","","","","","","","","]","","",""},
             {"AR","","","","","","","","","","","","","","","","","","","","","","","","","","args","",""},
-            {"CUER","","","NE NOM PA PASS PC PYC","NE NOM PA PASS PC PYC","","","","","","","","","","","","","","","","","","","","","","","",""},
-            {"PASS","","","","","","","","","","","","","","","","","","","","","","","","","","","NUM",""},
+            {"CUER","","","","","","","","","","","","","","","","","","","","NE NOM PA PASS PC PYC","","","","","","","",""},
+            {"PASS","","","","","","","","","","","","","","","","","","","","","","","","","","","NUM RESPASS","COM NOM COM RESPASS"},
             {"RESPASS","","","","","","∑","","","CM PASS","","","","","","","","","","","","","","","","","","",""},
             {"NUM","","","","","","","","","","","","","","","","","","","","","","","","","","","","DIGITO",""},
             {"RESNUM","","","","","","∑","","","∑","","","","","","","","","","","","","","","","","","NUM",""},
@@ -85,7 +85,7 @@ public class analizadorSintacticoConTabla {
         for (int i = datos.size()-1; i>=0; i--){
             cadenaCodigo.add(datos.get(i));
         }
-
+        System.out.println(cadenaCodigo);
         inicio();
         return aux;
     }
@@ -124,24 +124,33 @@ public class analizadorSintacticoConTabla {
                      bucle= false;
                      System.out.println("esta vacio xd");
                  }else{
-                     for(int j = 0; j < 48; j++){
+                     for(int j = 0; j <= 48; j++){
                          if (tabla[j][0].equals(auxInterseccion[0])) {
                              isNTerminal = true;
                              break;
                          }
                      }
+
                      if(isNTerminal){
                          pilaProceso.pop();
-                         //arreglar porque en caso de que tenga mas de un elemento no lo estaria agregando como diferentes elemntos sino como uno solo
+                         System.out.println("es no terminal");
                          gramaticaEntrada = interseccion.split(" ");
                          ingresarCadenaAlaPila(gramaticaEntrada);
                          imprimirPila();
                      }else{
-                         pilaProceso.pop();
-                         imprimirPila();
-                         pilaProceso.push(interseccion);
-                         popDatos();
-                         imprimirPila();
+                         System.out.println("es terminal");
+                         gramaticaEntrada = interseccion.split(" ");
+                         String vacio = "∑";
+                         if(vacio.equals(gramaticaEntrada[0])){
+                             pilaProceso.pop();
+                         }else{
+                             System.out.println(cadenaCodigo.get(cadenaCodigo.size()-1));
+                             imprimirPila();
+                             popDatos();
+                             imprimirPila();
+
+                         }
+
                      }
                  }
              }else{
