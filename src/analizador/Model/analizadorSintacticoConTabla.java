@@ -5,9 +5,7 @@ import javafx.collections.ObservableList;
 
 import java.util.Arrays;
 import java.util.Stack;
-
 public class analizadorSintacticoConTabla {
-
     String[][] tabla = {
             {"","public","class","a...z","A...Z","(",")","{","}",",",".","private","int","String","float",";","super","this","=","import","new","main","static","void","[","]","args","0..1","\""},
             {"SA","INICIO C","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
@@ -28,7 +26,7 @@ public class analizadorSintacticoConTabla {
             {"PRIV","","","","","","","","","","","private","","","","","","","","","","","","","","","","",""},
             {"TIPO","","","","","","","","","","","","int","String","float","","","","","","","","","","","","","",""},
             {"PYC","","","","","","","","","","","","","","",";","","","","","","","","","","","","",""},
-            {"RESTA","PUB","","","","","","","","","","ATRIBU","","","","","","","","","","","","","","","","",""},
+            {"RESTA","CONS","","","","","","","","","","ATRIBU","","","","","","","","","","","","","","","","",""},
             {"CONS","PUB NOM PA PARAM PC RESTCONS","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"PARAM","","","","","","","","","","","","TIPO NOM RESTPARAM","TIPO NOM RESTPARAM","TIPO NOM RESTPARAM","","","","","","","","","","","","","",""},
             {"RESTPARAM","","","","","","PC","","","CM PARAM","","","","","","","","","","","","","","","","","","",""},
@@ -64,13 +62,10 @@ public class analizadorSintacticoConTabla {
     ObservableList<String> cadenaCodigo = FXCollections.observableArrayList();
     expresionesRegulares expresiones = new expresionesRegulares();
     Stack<String> pilaProceso = new Stack<String>();
-
-    // IMPRIMIR LA PILA
     public void imprimirPila(){
         //System.out.println("elementos en pila");
         System.out.println(Arrays.asList(pilaProceso));
     }
-    //ELIMINAR LOS DATOS DESPUES DE LA COMPARACION DE DATOS
     public void popDatos(){
         pilaProceso.pop();
         cadenaCodigo.remove(cadenaCodigo.size()-1);
@@ -90,7 +85,7 @@ public class analizadorSintacticoConTabla {
         for (int i = datos.size()-1; i>=0; i--){
             cadenaCodigo.add(datos.get(i));
         }
-        System.out.println(cadenaCodigo);
+
         inicio();
         return aux;
     }
@@ -114,6 +109,7 @@ public class analizadorSintacticoConTabla {
                      break;
                  }
              }
+
              for(int j = 0; j < 30; j++){
                  if(tabla[j][0].equals(apuntador1)){
                      posicion2 = j;
@@ -149,13 +145,38 @@ public class analizadorSintacticoConTabla {
                      }
                  }
              }else{
-                 bucle = false;
+                 if (!encontradoCol) {
+                     if(!palabra()){
+                         if(!noum()){
+                             bucle = false;
+                             System.out.println("error en la cadena de entrada");
+                             System.out.println(" ultimo en cadena de entrada: " + cadenaCodigo.get(cadenaCodigo.size()-1));
+                         }
+                     }
+                 }
+
              }
 
          }
 
      }
-
-///  validar en que posicion se encuentran las palabras, para validadarlas en una funcion por separado
+     public boolean palabra(){
+        boolean aux =  false;
+        if(expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NOM")){
+            popDatos();
+            imprimirPila();
+            aux = true;
+        }
+        return aux;
+     }
+     public boolean noum(){
+        boolean aux =  false;
+        if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
+            popDatos();
+            imprimirPila();
+            aux =  true;
+        }
+        return aux;
+     }
 
 }

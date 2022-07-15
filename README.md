@@ -15,14 +15,15 @@ public class Product {
     } }
     
     // otro
+    --------------------------------------------------------------------
     import PuntoVenta . Model . Product ;
-    public class main {
-    Product producto = new Product ( ) ;
-    public static void main ( String [ ] args ) {
-    	Producto . setIdProducto ( 1 ) ;
-    	producto . setNombreProducto ( " pan " ) ;
-    	producto . setPrecioProducto ( 12 ) ;
-    	producto . setCategoriaProducto ( " panes " ) ;
-    	producto . setExistencia ( 69 ) ;
-        	} 
-        }
+    
+    
+       public class main {
+    	
+        public static void main ( String [ ] args ) {
+    
+    		new Product ( 1 , " pan " , 12 , " panes ", 69 ) ;
+    	} 
+    }
+
