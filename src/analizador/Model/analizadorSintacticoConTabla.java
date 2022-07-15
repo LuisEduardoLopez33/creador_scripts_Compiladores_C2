@@ -183,11 +183,18 @@ public class analizadorSintacticoConTabla {
      }
      public boolean noum(){
         boolean aux =  false;
-        if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
-            popDatos();
+        if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("PASS")){
+            pilaProceso.pop();
+            String[] gramaticaEntrada = tabla[44][27].split(" ");
+            ingresarCadenaAlaPila(gramaticaEntrada);
             imprimirPila();
             aux =  true;
         }
+         if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
+             popDatos();
+             imprimirPila();
+             aux =  true;
+         }
         return aux;
      }
 
