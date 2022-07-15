@@ -8,7 +8,7 @@ import java.util.Stack;
 public class analizadorSintacticoConTabla {
     String[][] tabla = {
             {"","public","class","a...z","A...Z","(",")","{","}",",",".","private","int","String","float",";","super","this","=","import","new","main","static","void","[","]","args","0..1","\""},
-            {"SA","INICIO C RETEN","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
+            {"SA","INICIO C","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"INICIO","PUB CLA NOM CUERPO","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"PUB","public","","","","","","","","","","","","","","","","","","","","","","","","","","",""},
             {"CLA","","class","","","","","","","","","","","","","","","","","","","","","","","","","",""},
@@ -110,7 +110,7 @@ public class analizadorSintacticoConTabla {
                  }
              }
 
-             for(int j = 0; j < 30; j++){
+             for(int j = 0; j < 50; j++){
                  if(tabla[j][0].equals(apuntador1)){
                      posicion2 = j;
                      encontradoFil = true;
@@ -124,7 +124,7 @@ public class analizadorSintacticoConTabla {
                      bucle= false;
                      System.out.println("esta vacio xd");
                  }else{
-                     for(int j = 0; j <= 48; j++){
+                     for(int j = 0; j < 50; j++){
                          if (tabla[j][0].equals(auxInterseccion[0])) {
                              isNTerminal = true;
                              break;
@@ -162,6 +162,9 @@ public class analizadorSintacticoConTabla {
                              System.out.println(" ultimo en cadena de entrada: " + cadenaCodigo.get(cadenaCodigo.size()-1));
                          }
                      }
+                 }else {
+                     bucle = false;
+                     System.out.println("Ultimo en la cadena de Entrada: " + cadenaCodigo.get(cadenaCodigo.size()-1));
                  }
 
              }
