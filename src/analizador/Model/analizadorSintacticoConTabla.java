@@ -98,103 +98,120 @@ public class analizadorSintacticoConTabla {
              boolean encontradoFil = false;
              boolean isNTerminal = false;
              String interseccion = "";
-             String apuntador1 = pilaProceso.peek();
-             String apuntador2 = cadenaCodigo.get(cadenaCodigo.size()-1);
              int posicion = 0;
              int posicion2 = 0;
-             for(int i = 0; i < 29; i++){
-                 if (tabla [0][i].equals(apuntador2) ){
-                     posicion = i;
-                     encontradoCol = true;
-                     break;
-                 }
+             boolean vaciopila = false;
+             if (!pilaProceso.empty() && !cadenaCodigo.isEmpty()){
+                 vaciopila = true;
              }
-
-             for(int j = 0; j < 50; j++){
-                 if(tabla[j][0].equals(apuntador1)){
-                     posicion2 = j;
-                     encontradoFil = true;
-                     break;
-                 }
-             }
-             if(encontradoCol && encontradoFil){
-                 interseccion = tabla[posicion2][posicion];
-                 String[] auxInterseccion = interseccion.split(" ");
-                 if(interseccion.isEmpty()){
-                     bucle= false;
-                     System.out.println("esta vacio xd");
-                 }else{
-                     for(int j = 0; j < 50; j++){
-                         if (tabla[j][0].equals(auxInterseccion[0])) {
-                             isNTerminal = true;
-                             break;
-                         }
+             if (vaciopila) {
+                 String apuntador1 = pilaProceso.peek();
+                 String apuntador2 = cadenaCodigo.get(cadenaCodigo.size() - 1);
+                 for (int i = 0; i < 29; i++) {
+                     if (tabla[0][i].equals(apuntador2)) {
+                         posicion = i;
+                         encontradoCol = true;
+                         break;
                      }
+                 }
 
-                     if(isNTerminal){
-                         pilaProceso.pop();
-                         System.out.println("es no terminal");
-                         gramaticaEntrada = interseccion.split(" ");
-                         ingresarCadenaAlaPila(gramaticaEntrada);
-                         imprimirPila();
-                     }else{
-                         System.out.println("es terminal");
-                         gramaticaEntrada = interseccion.split(" ");
-                         String vacio = "∑";
-                         if(vacio.equals(gramaticaEntrada[0])){
+                 for (int j = 0; j < 50; j++) {
+                     if (tabla[j][0].equals(apuntador1)) {
+                         posicion2 = j;
+                         encontradoFil = true;
+                         break;
+                     }
+                 }
+
+
+                 if (encontradoCol && encontradoFil) {
+                     interseccion = tabla[posicion2][posicion];
+                     String[] auxInterseccion = interseccion.split(" ");
+                     if (interseccion.isEmpty()) {
+                         bucle = false;
+                         System.out.println("esta vacio xd");
+                     } else {
+                         for (int j = 0; j < 50; j++) {
+                             if (tabla[j][0].equals(auxInterseccion[0])) {
+                                 isNTerminal = true;
+                                 break;
+                             }
+                         }
+
+                         if (isNTerminal) {
                              pilaProceso.pop();
-                         }else{
-                             System.out.println(cadenaCodigo.get(cadenaCodigo.size()-1));
+                             System.out.println("es no terminal");
+                             gramaticaEntrada = interseccion.split(" ");
+                             ingresarCadenaAlaPila(gramaticaEntrada);
                              imprimirPila();
-                             popDatos();
-                             imprimirPila();
+                         } else {
+                             System.out.println("es terminal");
+                             gramaticaEntrada = interseccion.split(" ");
+                             String vacio = "∑";
+                             if (vacio.equals(gramaticaEntrada[0])) {
+                                 pilaProceso.pop();
+                             } else {
+                                 System.out.println(cadenaCodigo.get(cadenaCodigo.size() - 1));
+                                 imprimirPila();
+                                 popDatos();
+                                 imprimirPila();
+
+                             }
 
                          }
-
                      }
-                 }
-             }else{
-                 if (!encontradoCol) {
-                     if(!palabra()){
-                         if(!noum()){
-                             bucle = false;
-                             System.out.println("error en la cadena de entrada");
-                             System.out.println(" ultimo en cadena de entrada: " + cadenaCodigo.get(cadenaCodigo.size()-1));
+                 } else {
+                     if (!encontradoCol) {
+                         if (!palabra(vaciopila)) {
+                             if (!noum(vaciopila)) {
+                                 bucle = false;
+                                 System.out.println("error en la cadena de entrada");
+                                 System.out.println(" ultimo en cadena de entrada: " + cadenaCodigo.get(cadenaCodigo.size() - 1));
+                             }
                          }
+                     } else {
+                         bucle = false;
+                         System.out.println("Ultimo en la cadena de Entrada: " + cadenaCodigo.get(cadenaCodigo.size() - 1));
                      }
-                 }else {
-                     bucle = false;
-                     System.out.println("Ultimo en la cadena de Entrada: " + cadenaCodigo.get(cadenaCodigo.size()-1));
-                 }
 
+                 }
+             }else {
+                 System.out.println("FIN");
+                 bucle = false;
              }
 
          }
 
      }
-     public boolean palabra(){
+     public boolean palabra(boolean vaciopila){
         boolean aux =  false;
-        if(expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NOM")){
-            popDatos();
-            imprimirPila();
-            aux = true;
+        if (vaciopila){
+            if(expresiones.validarLetras(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NOM")){
+                popDatos();
+                imprimirPila();
+                aux = true;
+            }
         }
+
         return aux;
      }
-     public boolean noum(){
+     public boolean noum(boolean vaciopila){
         boolean aux =  false;
-        if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("PASS")){
-            pilaProceso.pop();
-            String[] gramaticaEntrada = tabla[44][27].split(" ");
-            ingresarCadenaAlaPila(gramaticaEntrada);
-            imprimirPila();
-            aux =  true;
+        if (vaciopila){
+            if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("PASS")){
+                pilaProceso.pop();
+                String[] gramaticaEntrada = tabla[44][27].split(" ");
+                ingresarCadenaAlaPila(gramaticaEntrada);
+                imprimirPila();
+                aux =  true;
+            }
+            if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
+                popDatos();
+                imprimirPila();
+                aux =  true;
+            }
         }
-         if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
-             popDatos();
-             imprimirPila();
-             aux =  true;
-         }
+
         return aux;
      }
 
