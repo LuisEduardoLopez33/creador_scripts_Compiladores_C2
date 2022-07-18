@@ -1,6 +1,7 @@
 package analizador.Controller;
 
 import analizador.Model.analizadorSintacticoConTabla;
+import analizador.Model.generadorScript;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ public class controllerInicio {
     ObservableList<String> entrada = FXCollections.observableArrayList();
     ObservableList<String> entrada2 = FXCollections.observableArrayList();
     analizadorSintacticoConTabla analizadorS;
+    generadorScript gen = new generadorScript();
 
     @FXML
     private TextArea classMain;

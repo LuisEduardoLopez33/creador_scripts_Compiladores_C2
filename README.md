@@ -23,7 +23,7 @@ public class Product {
     	
         public static void main ( String [ ] args ) {
     
-    		new Product ( 1 , " pan " , 12 , " panes ", 69 ) ;
+    		new Product ( 1 , " pan " , 12 , " panes " , 69 ) ;
     	} 
     }
 

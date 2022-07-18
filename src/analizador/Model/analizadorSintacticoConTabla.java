@@ -62,6 +62,9 @@ public class analizadorSintacticoConTabla {
     ObservableList<String> cadenaCodigo = FXCollections.observableArrayList();
     expresionesRegulares expresiones = new expresionesRegulares();
     Stack<String> pilaProceso = new Stack<String>();
+    ObservableList<String> tipo = FXCollections.observableArrayList();
+    ObservableList<String> variableNom = FXCollections.observableArrayList();
+    generadorScript gen = new generadorScript();
     public void imprimirPila(){
         //System.out.println("elementos en pila");
         System.out.println(Arrays.asList(pilaProceso));
@@ -91,6 +94,8 @@ public class analizadorSintacticoConTabla {
     }
      public void inicio(){
         boolean bucle = true;
+        boolean declaracionVar = true;
+        int contadorDeVariables = 0;
         pilaProceso.push("SA");
          while(bucle){
              String[] gramaticaEntrada;
@@ -137,13 +142,16 @@ public class analizadorSintacticoConTabla {
                                  break;
                              }
                          }
-
                          if (isNTerminal) {
+                             if(pilaProceso.peek().equals("CONS")){
+                                 declaracionVar = false;
+                             }
                              pilaProceso.pop();
                              System.out.println("es no terminal");
                              gramaticaEntrada = interseccion.split(" ");
                              ingresarCadenaAlaPila(gramaticaEntrada);
                              imprimirPila();
+
                          } else {
                              System.out.println("es terminal");
                              gramaticaEntrada = interseccion.split(" ");
@@ -151,6 +159,19 @@ public class analizadorSintacticoConTabla {
                              if (vacio.equals(gramaticaEntrada[0])) {
                                  pilaProceso.pop();
                              } else {
+                                 if(pilaProceso.peek().equals("TIPO") && declaracionVar){
+                                    tipo.add(cadenaCodigo.get(cadenaCodigo.size()-1));
+                                    variableNom.add(cadenaCodigo.get(cadenaCodigo.size()-2));
+                                 }
+                                 if(pilaProceso.peek().equals("TIPO") && !declaracionVar){
+                                     String tip = cadenaCodigo.get(cadenaCodigo.size()-1);
+                                     String nomb = cadenaCodigo.get(cadenaCodigo.size()-2);
+                                     if (!validarVariables(tip ,nomb, contadorDeVariables)){
+                                         bucle = false;
+                                         System.out.println("la variable no esta declarada");
+                                     }
+                                     contadorDeVariables+=1;
+                                 }
                                  System.out.println(cadenaCodigo.get(cadenaCodigo.size() - 1));
                                  imprimirPila();
                                  popDatos();
@@ -177,6 +198,9 @@ public class analizadorSintacticoConTabla {
                  }
              }else {
                  System.out.println("FIN");
+                 System.out.println(tipo);
+                 System.out.println(variableNom);
+                 gen.generator(tipo, variableNom);
                  bucle = false;
              }
 
@@ -212,6 +236,14 @@ public class analizadorSintacticoConTabla {
             }
         }
 
+        return aux;
+     }
+
+     public boolean validarVariables(String tip, String nomb, int contadorDeVariables){
+        boolean aux = false;
+        if(tip.equals(tipo.get(contadorDeVariables)) && nomb.equals(variableNom.get(contadorDeVariables))){
+            aux = true;
+        }
         return aux;
      }
 
