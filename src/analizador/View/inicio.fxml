@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="664.0" prefWidth="774.0" style="-fx-background-color: #97FEFD;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="analizador.Controller.controllerInicio">
+<AnchorPane accessibleRole="TEXT_AREA" prefHeight="755.0" prefWidth="774.0" style="-fx-background-color: #97FEFD;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="analizador.Controller.controllerInicio">
    <children>
       <TextArea fx:id="classMain" layoutX="59.0" layoutY="107.0" prefHeight="335.0" prefWidth="286.0" />
       <TextArea fx:id="classObjet" layoutX="442.0" layoutY="107.0" prefHeight="335.0" prefWidth="286.0" />
@@ -24,7 +24,7 @@
             <Font size="17.0" />
          </font>
       </Text>
-      <Button layoutX="343.0" layoutY="604.0" mnemonicParsing="false" onAction="#iniciarAnalizis" style="-fx-background-color: #69BC93;" text="Iniciar análisis">
+      <Button layoutX="327.0" layoutY="703.0" mnemonicParsing="false" onAction="#iniciarAnalizis" style="-fx-background-color: #69BC93;" text="Iniciar análisis">
          <font>
             <Font size="16.0" />
          </font></Button>
@@ -33,11 +33,11 @@
       <Circle layoutX="29.0" layoutY="172.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
       <Arc fill="#f9e81c" layoutX="411.0" layoutY="183.0" length="270.0" radiusX="24.0" radiusY="23.0" smooth="false" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" type="ROUND" />
       <Circle layoutX="407.0" layoutY="172.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
-      <TextArea fx:id="resultado" editable="false" layoutX="196.0" layoutY="486.0" prefHeight="107.0" prefWidth="382.0">
+      <TextArea fx:id="resultado" accessibleRole="TEXT_FIELD" editable="false" layoutX="87.0" layoutY="527.0" prefHeight="164.0" prefWidth="598.0">
          <font>
             <Font size="20.0" />
          </font></TextArea>
-      <Label fx:id="mensaje" alignment="CENTER" layoutX="298.0" layoutY="449.0" prefHeight="30.0" prefWidth="343.0" textAlignment="CENTER">
+      <Label fx:id="mensaje" alignment="CENTER" layoutX="209.0" layoutY="449.0" prefHeight="78.0" prefWidth="382.0" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
          </font></Label>

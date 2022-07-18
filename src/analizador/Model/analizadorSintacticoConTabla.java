@@ -67,6 +67,7 @@ public class analizadorSintacticoConTabla {
     ObservableList<String> valores = FXCollections.observableArrayList();
     ObservableList<String> instancia = FXCollections.observableArrayList();
     generadorScript gen = new generadorScript();
+    String respuesta = "";
     public void imprimirPila(){
         //System.out.println("elementos en pila");
         System.out.println(Arrays.asList(pilaProceso));
@@ -82,7 +83,6 @@ public class analizadorSintacticoConTabla {
         }
     }
     public String recivirDato(ObservableList<String> datos, ObservableList<String> datos2){
-        String aux = "";
         System.out.println("inicia el proceso");
         for (int i = datos2.size()-1; i>=0; i--){
             cadenaCodigo.add(datos2.get(i));
@@ -92,7 +92,7 @@ public class analizadorSintacticoConTabla {
         }
         System.out.println(cadenaCodigo);
         inicio();
-        return aux;
+        return respuesta;
     }
      public void inicio(){
         boolean bucle = true;
@@ -136,6 +136,7 @@ public class analizadorSintacticoConTabla {
                      String[] auxInterseccion = interseccion.split(" ");
                      if (interseccion.isEmpty()) {
                          bucle = false;
+                         respuesta = "Error";
                          System.out.println("esta vacio xd");
                      } else {
                          for (int j = 0; j < 50; j++) {
@@ -178,6 +179,7 @@ public class analizadorSintacticoConTabla {
                                      String nomb = cadenaCodigo.get(cadenaCodigo.size()-2);
                                      if (!validarVariables(tip ,nomb, contadorDeVariables)){
                                          bucle = false;
+                                         respuesta = "error. La variable no esta declarada. Ningun resultado Obtenido";
                                          System.out.println("la variable no esta declarada");
                                      }
                                      contadorDeVariables+=1;
@@ -197,6 +199,7 @@ public class analizadorSintacticoConTabla {
                          if (!palabra(vaciopila)) {
                              if (!noum(vaciopila)) {
                                  bucle = false;
+                                 respuesta = "error. Error en la cadena\n de entrada. Ultimo en la cadena\n de entrada \""+cadenaCodigo.get(cadenaCodigo.size()-1) + "\"";
                                  System.out.println("error en la cadena de entrada");
                                  System.out.println(" ultimo en cadena de entrada: " + cadenaCodigo.get(cadenaCodigo.size() - 1));
                              }
@@ -210,8 +213,9 @@ public class analizadorSintacticoConTabla {
              }else {
                  System.out.println("FIN");
                  if(validarCantidadYtipo(contadorDeVariables)){
-                     gen.generator(tipo, variableNom, valores, instancia);
+                     respuesta = "bien." + gen.generator(tipo, variableNom, valores, instancia);
                  }else{
+                     respuesta = "error. Error en agregar los datos al objeto\n no se agregaron todo los datos declarados. Ningun resultado Obtenido";
                      System.out.println("error en agregar los datos al objeto, no se agregaron todos los datos declarados");
                  }
 
@@ -278,6 +282,7 @@ public class analizadorSintacticoConTabla {
                 if(!instancia.get(0).equals(instancia.get(1))){
                     instancia.remove(0);
                     aux = false;
+                    respuesta = "error. El constructor no tiene\n el mismo nombre de la clase. Ningun resultado Obtenido";
                     instancia.add("El constructor no tiene el mismo nombre de la clase");
                 }
             }
@@ -286,6 +291,7 @@ public class analizadorSintacticoConTabla {
         if(instancia.size() > 2){
             if(!instancia.get(0).equals(instancia.get(2))){
                 aux = false;
+                respuesta = "error. La importacion de la\n clase es incorrecta. Ningun resultado Obtenido";
                 instancia.add("La importacion de la clase es incorrecta");
             }
         }
@@ -310,6 +316,7 @@ public class analizadorSintacticoConTabla {
              System.out.println(contador);
              System.out.println(tipo.size());
              aux = false;
+             respuesta = "error. No corresponde a la cantidad de\n variables de claradas. Ningun resultado Obtenido";
              System.out.println("no corresponde a la cantidad de variables declaradas");
          }
         return aux;

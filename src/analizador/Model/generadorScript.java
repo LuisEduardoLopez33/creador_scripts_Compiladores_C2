@@ -6,7 +6,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 public class generadorScript {
-    public void generator(ObservableList<String> tipo, ObservableList<String> variableNom, ObservableList<String> valores, ObservableList<String> instancia){
+    public String generator(ObservableList<String> tipo, ObservableList<String> variableNom, ObservableList<String> valores, ObservableList<String> instancia){
+        String aux = "";
         try {
             String ruta = "scripts/tabla.txt";
             StringBuilder contenido = new StringBuilder("create table ");
@@ -41,9 +42,12 @@ public class generadorScript {
             bw.write(contenido.toString());
             bw.close();
             System.out.println(contenido);
+            aux = contenido.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return aux;
     }
 
 }

@@ -66,7 +66,7 @@ public class controllerInicio {
 
 
 
-           // insertMensaje();
+            insertMensaje();
         }else {
             mensaje.setText("Los Cuadros no Tienen que estar Vacio");
         }
@@ -80,16 +80,28 @@ public class controllerInicio {
     }
 
     public void insertMensaje(){
-        if (Boolean.parseBoolean(resltadoObtenido.split(",")[0])){
-            mensaje.setText("Cadena valida");
-            mensaje.setTextFill(Color.GREEN);
-        }else {
+//        String[] aux = resltadoObtenido.split(",");
 
-            mensaje.setText("Cadena no valida");
+        if ("error".equals(resltadoObtenido.split("\\.")[0])){
+            System.out.println("Esta en lo cierto: " + resltadoObtenido.split("\\.")[0]);
+            mensaje.setText(resltadoObtenido.split("\\.")[1]);
             mensaje.setTextFill(Color.RED);
-            System.out.println(resltadoObtenido.split(",")[1]);
-            resultado.setText("Este dato no es Valido: " + resltadoObtenido.split(",")[1]);
+            System.out.println(resltadoObtenido);
+            resultado.setText(resltadoObtenido.split("\\.")[2]);
+        }else {
+            if (resltadoObtenido.split("\\.")[0].equals("bien")) {
+                mensaje.setText("Todo Resulto bien");
+                mensaje.setTextFill(Color.GREEN);
+                resultado.setText(resltadoObtenido);
+            }else {
+                mensaje.setText("Error");
+                mensaje.setTextFill(Color.RED);
+                resultado.setText("Ningun Dato Encontrado");
+            }
         }
+
+
+
     }
 
 
