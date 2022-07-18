@@ -64,6 +64,8 @@ public class analizadorSintacticoConTabla {
     Stack<String> pilaProceso = new Stack<String>();
     ObservableList<String> tipo = FXCollections.observableArrayList();
     ObservableList<String> variableNom = FXCollections.observableArrayList();
+    ObservableList<String> valores = FXCollections.observableArrayList();
+    ObservableList<String> instancia = FXCollections.observableArrayList();
     generadorScript gen = new generadorScript();
     public void imprimirPila(){
         //System.out.println("elementos en pila");
@@ -146,6 +148,10 @@ public class analizadorSintacticoConTabla {
                              if(pilaProceso.peek().equals("CONS")){
                                  declaracionVar = false;
                              }
+                             if(pilaProceso.peek().equals("PASS")){
+                                 System.out.println(cadenaCodigo.get(cadenaCodigo.size()-1));
+                                 valores.add(cadenaCodigo.get(cadenaCodigo.size()-2));
+                             }
                              pilaProceso.pop();
                              System.out.println("es no terminal");
                              gramaticaEntrada = interseccion.split(" ");
@@ -154,6 +160,10 @@ public class analizadorSintacticoConTabla {
 
                          } else {
                              System.out.println("es terminal");
+                             if(!validarInstancia()){
+                                 bucle = false;
+                                 System.out.println(instancia.get(instancia.size()-1));
+                             }
                              gramaticaEntrada = interseccion.split(" ");
                              String vacio = "∑";
                              if (vacio.equals(gramaticaEntrada[0])) {
@@ -172,6 +182,7 @@ public class analizadorSintacticoConTabla {
                                      }
                                      contadorDeVariables+=1;
                                  }
+
                                  System.out.println(cadenaCodigo.get(cadenaCodigo.size() - 1));
                                  imprimirPila();
                                  popDatos();
@@ -198,9 +209,12 @@ public class analizadorSintacticoConTabla {
                  }
              }else {
                  System.out.println("FIN");
-                 System.out.println(tipo);
-                 System.out.println(variableNom);
-                 gen.generator(tipo, variableNom);
+                 if(validarCantidadYtipo(contadorDeVariables)){
+                     gen.generator(tipo, variableNom, valores, instancia);
+                 }else{
+                     System.out.println("error en agregar los datos al objeto, no se agregaron todos los datos declarados");
+                 }
+
                  bucle = false;
              }
 
@@ -230,6 +244,7 @@ public class analizadorSintacticoConTabla {
                 aux =  true;
             }
             if(expresiones.validarNumeros(cadenaCodigo.get(cadenaCodigo.size()-1)) && pilaProceso.peek().equals("NUM")){
+                valores.add(cadenaCodigo.get(cadenaCodigo.size()-1));
                 popDatos();
                 imprimirPila();
                 aux =  true;
@@ -244,6 +259,59 @@ public class analizadorSintacticoConTabla {
         if(tip.equals(tipo.get(contadorDeVariables)) && nomb.equals(variableNom.get(contadorDeVariables))){
             aux = true;
         }
+        return aux;
+     }
+
+     public boolean validarInstancia(){
+        boolean aux = true;
+        if(pilaProceso.peek().equals("CLA")){
+            instancia.add(cadenaCodigo.get(cadenaCodigo.size()-2));
+
+        }
+        if (pilaProceso.peek().equals("IMP")){
+            instancia.add(cadenaCodigo.get(cadenaCodigo.size()-6));
+
+        }
+        if(instancia.size() ==1){
+            if(pilaProceso.peek().equals("PUB")){
+                instancia.add(cadenaCodigo.get(cadenaCodigo.size()-2));
+                if(!instancia.get(0).equals(instancia.get(1))){
+                    instancia.remove(0);
+                    aux = false;
+                    instancia.add("El constructor no tiene el mismo nombre de la clase");
+                }
+            }
+
+        }
+        if(instancia.size() > 2){
+            if(!instancia.get(0).equals(instancia.get(2))){
+                aux = false;
+                instancia.add("La importacion de la clase es incorrecta");
+            }
+        }
+        return aux;
+     }
+
+     public boolean validarCantidadYtipo(int contador){
+        boolean aux = true;
+        for(int i =0; i< tipo.size(); i++){
+            String s = tipo.get(i);
+            if(s.equals("int") || s.equals("float")){
+                if(!expresiones.validarNumeros(valores.get(i))){
+                    aux = false;
+                    break;
+                }
+            }
+        }
+        if(!(contador == valores.size())){
+            aux= false;
+        }
+         if(!(contador == tipo.size())){
+             System.out.println(contador);
+             System.out.println(tipo.size());
+             aux = false;
+             System.out.println("no corresponde a la cantidad de variables declaradas");
+         }
         return aux;
      }
 

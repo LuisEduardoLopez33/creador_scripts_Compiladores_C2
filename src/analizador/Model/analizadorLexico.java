@@ -14,8 +14,9 @@ public class analizadorLexico {
     ObservableList<String> numeros = FXCollections.observableArrayList();
     ObservableList<String> palabra = FXCollections.observableArrayList();
     ObservableList<String> incorrectos = FXCollections.observableArrayList();
+    boolean encontrado = true;
 
-    public void inicio(String datos){
+    public boolean inicio(ObservableList<String> datos, ObservableList<String> datos2){
         entrad.clear();
         reservados.clear();
         delimitadores.clear();
@@ -24,13 +25,13 @@ public class analizadorLexico {
         palabra.clear();
         incorrectos.clear();
         // guarda la entrada en elemntos separados
-        StringTokenizer st = new StringTokenizer(datos);
-        while(st.hasMoreTokens()){
-            entrad.add(st.nextToken());
+        System.out.println("inicia el proceso");
+        entrad.addAll(datos);
+        entrad.addAll(datos2);
+        for (String s : entrad) {
+            comprobarReservados(s);
         }
-        for (int i = 0; i < entrad.size(); i++){
-            comprobarReservados(entrad.get(i));
-        }
+        return encontrado;
     }
 
     void comprobarReservados(String dato){
@@ -72,6 +73,7 @@ public class analizadorLexico {
             numeros.add(dato);
         }else{
             datoIncorreto(dato);
+            encontrado = false;
         }
     }
 

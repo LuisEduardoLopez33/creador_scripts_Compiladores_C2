@@ -1,5 +1,6 @@
 package analizador.Controller;
 
+import analizador.Model.analizadorLexico;
 import analizador.Model.analizadorSintacticoConTabla;
 import analizador.Model.generadorScript;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ public class controllerInicio {
     ObservableList<String> entrada2 = FXCollections.observableArrayList();
     analizadorSintacticoConTabla analizadorS;
     generadorScript gen = new generadorScript();
+    analizadorLexico lexico = new analizadorLexico();
 
     @FXML
     private TextArea classMain;
@@ -55,8 +57,14 @@ public class controllerInicio {
                 entrada2.add(st.nextToken());
             }
 
-            analizadorS = new analizadorSintacticoConTabla();
-            resltadoObtenido = analizadorS.recivirDato(entrada, entrada2);
+            if(lexico.inicio(entrada, entrada2)){
+                analizadorS = new analizadorSintacticoConTabla();
+                resltadoObtenido = analizadorS.recivirDato(entrada, entrada2);
+            }else{
+                System.out.println("ingresaste algunos simbolos que no son validos");
+            }
+
+
 
            // insertMensaje();
         }else {
